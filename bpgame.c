@@ -1,4 +1,9 @@
-
+/* 
+Author: Jonathan Garcia, Viktoriia Moskova
+UIN: jgarc238 , vmosk2
+UIC
+Fall 2021
+*/
 
 // file:  bpgame.c
 
@@ -26,69 +31,82 @@ struct bpgame {
 
 BPGame * bp_create(int nrows, int ncols){
    
-   BPGame * bp = malloc(sizeof(struct bpgame));
+   BPGame * bp = malloc(sizeof(struct bpgame));// creates a new struct
    
-   if(nrows > MAX_ROWS || ncols > MAX_COLS){
+   if(nrows > MAX_ROWS || ncols > MAX_COLS){// checks if the input cols or rows are too large
       fprintf(stderr, "nrows or ncols is larger than 40");
       return NULL;
    }
 
-   char** m1;
-   bp->row = nrows;
-   bp->col = ncols;
-   m1 = (char**) malloc (sizeof(char*) * nrows);
+   bp->row = nrows;// input rows into struct
+   bp->col = ncols;//input cols into struct
+   bp->m = (char**) malloc (sizeof(char*) * nrows);// allocate mem for matrix
 
    for(int i = 0; i < nrows; i++){
-      m1[i] = (char*) malloc (sizeof(char) * ncols);
+      bp->m[i] = (char*) malloc (sizeof(char) * ncols);
    }
-
-   bp->m = m1;
-   free(m1);
 
    srand(time(0));
 
    for(int i = 0; i < nrows; i++){
       for(int j = 0; j < ncols; j++){
-         bp->m[i][j] = "^=o+"[rand () % 4]; 
+         bp->m[i][j] = "^=o+"[rand () % 4];// inputs random color into matrix
       }
    }
 
-   bp->top = -1;
-   bp->score = 0;
+   bp->top = -1;// sets top to -1
+   bp->score = 0;// sets score to 0
 
    return bp;
 }
 
 BPGame * bp_create_from_mtx(char mtx[][MAX_COLS], int nrows, int ncols){
 
-   BPGame * bp = malloc(sizeof(struct bpgame));
+   BPGame * bp = malloc(sizeof(struct bpgame));// creates a struct
 
-   if(nrows > MAX_ROWS || ncols > MAX_COLS){
+   if(nrows > MAX_ROWS || ncols > MAX_COLS){// checks if the input cols or rows are too large
       fprintf(stderr, "nrows or ncols is larger than 40");
       return NULL;
    }
 
-   char** m1;
-   bp->row = nrows;
-   bp->col = ncols;
-   m1 = (char**) malloc (sizeof(char*) * nrows);
+   bp->row = nrows;// input rows into struct
+   bp->col = ncols;//input cols into struct
+   bp->m = (char**) malloc (sizeof(char*) * nrows);// allocate mem for matrix
 
    for(int i = 0; i < nrows; i++){
-      m1[i] = (char*) malloc (sizeof(char) * ncols);
+      bp->m[i] = (char*) malloc (sizeof(char) * ncols);
    }
-
-   bp->m = m1;
-   free(m1);
 
    for(int i = 0; i < nrows; i++){
       for(int j = 0; j < ncols; j++){
-         if(mtx[i][j] != '^' || mtx[i][j] != '=' || mtx[i][j] != 'o' || mtx[i][j] != '+'){
+
+         if(mtx[i][j] == None){// checks for air
+            continue;
+         }
+
+         else if(mtx[i][j] == Red){// checks for the color red
+            continue;
+         }
+         else if(mtx[i][j] == Blue){// checks for the color blue
+            continue;
+         }
+         else if(mtx[i][j] == Yellow){// checks for the color yellow
+            continue;
+         }
+         else if(mtx[i][j] == Green){// checks for the color green
+            continue;
+         }
+         else{// if neither then send error
             fprintf(stderr, "One of the values in the matrix given is not a color");
             return NULL;
-         } 
-         else{
-            bp->m[i][j] = mtx[i][j];
          }
+      }
+   }
+   
+
+   for(int i = 0; i < nrows; i++){
+      for(int j = 0; j < ncols; j++){
+         bp->m[i][j] = mtx[i][j];// input values from mtx into the struct matrix
       }
    }
 
@@ -98,15 +116,156 @@ BPGame * bp_create_from_mtx(char mtx[][MAX_COLS], int nrows, int ncols){
 void bp_destroy(BPGame * b){
 
    for(int i = 0; i < b->row; i++){
-      free(b->m[i]);
+      free(b->m[i]);// free the inner array
    }
 
-   free(b->m);
+   free(b->m);// free outer array
 }
 
 void bp_display(BPGame * b){
+   int i;
+   int j;
+
+    for(i = 0; i < b->row; i++){
+        for(j = 0; j < b->col; j++){
+            printf("%c", b->m[i][j]);//print colors
+        }
+        printf("\n");// create a new line
+    }
+}
+/*
+void bp_display(BPGame * b){
+   int i;
+   int j;
+   int counter = 0;
+
+   for(i = 0; i < b->row; i++){
+      if(i == 0 || i == b->row - 1){
+         printf("+");
+      }
+      else{
+         printf("-");
+      }
+   }
+
+   printf("\n");
    
+   for(i = 0; i < b->row; i++){
+      printf("%d", i);
+      printf("|");
+      
+      for(j = 0; j < b->col; j++){
+         printf("%c", b->m[i][j]);
+      }
+      printf("\n");
+   }
+
+   for(i = 0; i < b->row; i++){
+      if(i == 0 || i == b->row - 1){
+         printf("+");
+      }
+      else{
+         printf("-");
+      }
+   }
+}
+*/
+void bp_display_STD(BPGame *b) {
+   int i;
+   int j;
+
+    for(i = 0; i < b->row; i++){
+        for(j = 0; j < b->col; j++){
+            printf("%c", b->m[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int bp_pop(BPGame * b, int r, int c){
+
+   if(r > b->row || c > b->col){
+      return 0;
+   }
+
+   int i;
+   int j;
+   int count = 0;
+
+   for(i = 0; i < b->row; i++){
+      for(j = 0; j < b->col; j++){
+         if(r == i && c == j){
+            if(b->m[i][j] == b->m[i+1][j]){
+               b->m[i][j] == None;
+               bp_pop(b, r + 1, c);
+               count++;
+            }
+            else if(b->m[i][j] == b->m[i-1][j]){
+               b->m[i][j] == None;
+               bp_pop(b, r - 1, c);
+               count++;
+            }
+            else if(b->m[i][j] == b->m[i][j+1]){
+               b->m[i][j] == None;
+               bp_pop(b, r, c + 1);
+               count++;
+            }
+            else if(b->m[i][j] == b->m[i-1][j]){
+               b->m[i][j] == None;
+               bp_pop(b, r, c - 1);
+               count++;
+            }
+            
+         }
+      }
+   }
+
+   if(count > 0){
+      b->score = b->score + count * (count - 1);
+      return count;
+   }
+
+   return 0;
+}
+
+int bp_is_compact(BPGame * b){
+   return -1;
+}
+
+void bp_float_one_step(BPGame * b){
+
+}
+
+int bp_score(BPGame * b){
+   return -1;
+}
+
+int bp_get_balloon(BPGame * b, int r, int c){
+   return -1;
+}
+
+int bp_can_pop(BPGame * b){
+   return -1;
+}
+
+int bp_undo(BPGame * b){
+   return -1;
 }
 
 
+int main(){
 
+   BPGame * bp;
+   bp = bp_create(4, 4);
+   int num = 0;
+
+   bp_display(bp);
+
+   num = bp_pop(bp, 1, 1);
+
+   printf("%d", num);
+
+   bp_display(bp);
+
+   bp_destroy(bp);
+}
