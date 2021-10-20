@@ -21,6 +21,7 @@ Fall 2021
 struct bpgame {
 
    char **m;// matrix that contains all the values
+   char **pMtx;//matix that contains the matrix just incase user does undo
    int top;// used for push and pop of values
    int score;//holds the score for the user
    int row;//stores the number of rows
@@ -44,6 +45,12 @@ BPGame * bp_create(int nrows, int ncols){
 
    for(int i = 0; i < nrows; i++){
       bp->m[i] = (char*) malloc (sizeof(char) * ncols);
+   }
+
+   bp->pMtx = (char**) malloc (sizeof(char*) * nrows);// allocate mem for matrix
+
+   for(int i = 0; i < nrows; i++){
+      bp->pMtx[i] = (char*) malloc (sizeof(char) * ncols);
    }
 
    srand(time(0));
@@ -76,6 +83,13 @@ BPGame * bp_create_from_mtx(char mtx[][MAX_COLS], int nrows, int ncols){
    for(int i = 0; i < nrows; i++){
       bp->m[i] = (char*) malloc (sizeof(char) * ncols);
    }
+
+   bp->pMtx = (char**) malloc (sizeof(char*) * nrows);// allocate mem for matrix
+
+   for(int i = 0; i < nrows; i++){
+      bp->pMtx[i] = (char*) malloc (sizeof(char) * ncols);
+   }
+
 
    for(int i = 0; i < nrows; i++){
       for(int j = 0; j < ncols; j++){
@@ -190,6 +204,7 @@ int bp_pop(BPGame * b, int r, int c){
 
    int i;
    int j;
+   int numBalloons = 0;
    int count = 0;
 
    for(i = 0; i < b->row; i++){
@@ -249,6 +264,30 @@ int bp_can_pop(BPGame * b){
 }
 
 int bp_undo(BPGame * b){
+
+   int check = 0; // used to check if the undo function is needed
+   int i; 
+   int j;
+
+   for(i = 0; i < b->row; i++){
+      for(j = 0; j < b->col; j++){
+         if(b->m[i][j] != b->pMtx[i][j]){
+            check = 1;
+         }
+         else{
+            continue;
+         }
+      }
+   }
+
+   if(check == 0){
+
+   }
+
+   else{
+      
+   }
+
    return -1;
 }
 
