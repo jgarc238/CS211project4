@@ -212,22 +212,22 @@ int bp_pop(BPGame * b, int r, int c){
          if(r == i && c == j){
             if(b->m[i][j] == b->m[i+1][j]){
                b->m[i][j] == None;
-               bp_pop(b, r + 1, c);
+               
                count++;
             }
             else if(b->m[i][j] == b->m[i-1][j]){
                b->m[i][j] == None;
-               bp_pop(b, r - 1, c);
+               
                count++;
             }
             else if(b->m[i][j] == b->m[i][j+1]){
                b->m[i][j] == None;
-               bp_pop(b, r, c + 1);
+               
                count++;
             }
             else if(b->m[i][j] == b->m[i-1][j]){
                b->m[i][j] == None;
-               bp_pop(b, r, c - 1);
+               
                count++;
             }
             
@@ -252,10 +252,42 @@ void bp_float_one_step(BPGame * b){
 }
 
 int bp_score(BPGame * b){
-   return -1;
+   return b->score;
 }
 
 int bp_get_balloon(BPGame * b, int r, int c){
+
+   int i;
+   int j;
+   char value;
+
+   if(r > b->row || c > b->col){
+      return -1;
+   }
+
+   for(i = 0; i < b->row; i++){
+      for(j= 0; j < b->col; j++){
+         if(r == i && c == j){
+            if(b->m[i][j] == None){// checks for air
+               return None;
+            }
+            else if(b->m[i][j] == Red){// checks for the color red
+               return Red;
+            }
+            else if(b->m[i][j] == Blue){// checks for the color blue
+               return Blue;
+            }
+            else if(b->m[i][j] == Yellow){// checks for the color yellow
+               return Yellow;
+            }
+            else if(b->m[i][j] == Green){// checks for the color green
+               return Green;
+            }
+         }
+      }
+         
+   }
+
    return -1;
 }
 
@@ -285,7 +317,7 @@ int bp_undo(BPGame * b){
    }
 
    else{
-      
+
    }
 
    return -1;
