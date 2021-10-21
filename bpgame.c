@@ -211,24 +211,25 @@ int bp_pop(BPGame * b, int r, int c){
       for(j = 0; j < b->col; j++){
          if(r == i && c == j){
             Ballon == bp_get_balloon(b, r, c);
+            printf("%c\n", None);
             b->m[i][j] == None;
             if(Ballon == b->m[i+1][j]){
-               b->m[i][j] == None;
+               //b->m[i][j] == None;
                bp_pop(b, r + 1, c);
-               
+               count++;
             }
             else if(Ballon == b->m[i-1][j]){
-               b->m[i][j] == None;
+              // b->m[i][j] == None;
                bp_pop(b, r - 1, c);
                count++;
             }
             else if(Ballon == b->m[i][j+1]){
-               b->m[i][j] == None;
+               //b->m[i][j] == None;
                bp_pop(b, r, c + 1);
                count++;
             }
             else if(Ballon == b->m[i-1][j]){
-               b->m[i][j] == None;
+               //b->m[i][j] == None;
                bp_pop(b, r, c - 1);
                count++;
             }
@@ -273,16 +274,16 @@ int bp_get_balloon(BPGame * b, int r, int c){
             if(b->m[i][j] == None){// checks for air
                return None;
             }
-            else if(b->m[i][j] == Red){// checks for the color red
+            if(b->m[i][j] == Red){// checks for the color red
                return Red;
             }
-            else if(b->m[i][j] == Blue){// checks for the color blue
+            if(b->m[i][j] == Blue){// checks for the color blue
                return Blue;
             }
-            else if(b->m[i][j] == Yellow){// checks for the color yellow
+            if(b->m[i][j] == Yellow){// checks for the color yellow
                return Yellow;
             }
-            else if(b->m[i][j] == Green){// checks for the color green
+            if(b->m[i][j] == Green){// checks for the color green
                return Green;
             }
          }
@@ -294,6 +295,27 @@ int bp_get_balloon(BPGame * b, int r, int c){
 }
 
 int bp_can_pop(BPGame * b){
+
+   int check = 0;
+   int i;
+   int j;
+
+   for(i = 0; i < b->row; i++){
+      for(j = 0; j < b->col; j++){
+         if(b->m[i][j] != None){
+            check = 1;
+         }
+      }
+   }
+
+   if(check == 0){
+      return 0;
+   }
+
+   else{
+
+   }
+
    return -1;
 }
 
