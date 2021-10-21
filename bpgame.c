@@ -1,12 +1,3 @@
-/* 
-Author: Jonathan Garcia, Viktoriia Moskova
-UIN: jgarc238 , vmosk2
-UIC
-Fall 2021
-*/
-
-// file:  bpgame.c
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -196,43 +187,63 @@ void bp_display_STD(BPGame *b) {
     }
 }
 
+int valid_bp_pop(BPGame * b, int r, int c ) {
+         if(r>0 && r<b->row ){
+            return 1;
+         }
+         if(c>0 && c<b->col ){
+            return 1;
+      }
+   return 0;
+}
+
+
+
 int bp_pop(BPGame * b, int r, int c){
 
-   if(r > b->row || c > b->col){
+   if(r > b->row && c > b->col){
       return 0;
    }
 
-   int i;
-   int j;
-   int Ballon;
+   int i = 0;
+   int j = 0;
+   int Ballon = 0;
    int count = 0;
+   int check =0;
+
+
 
    for(i = 0; i < b->row; i++){
       for(j = 0; j < b->col; j++){
-         if(r == i && c == j){
-            Ballon == bp_get_balloon(b, r, c);
-            b->m[i][j] == None;
-            if(Ballon == b->m[i+1][j]){
-               b->m[i][j] == None;
+         if(r == i || c == j){
+            Ballon = bp_get_balloon(b, r, c);
+            b->m[i][j] = None;
+            
+            check=valid_bp_pop(b,r+1,c);
+                 if(Ballon == b->m[i+1][j] && check==1){
+               b->m[i][j] = None;
                bp_pop(b, r + 1, c);
-               
+               count++;
             }
-            else if(Ballon == b->m[i-1][j]){
-               b->m[i][j] == None;
+            check=valid_bp_pop(b,r-1,c);
+
+            if(Ballon == b->m[i-1][j] && check==1){
+               b->m[i][j] = None;
                bp_pop(b, r - 1, c);
                count++;
             }
-            else if(Ballon == b->m[i][j+1]){
-               b->m[i][j] == None;
+            check=valid_bp_pop(b,r,c+1);
+            if(Ballon == b->m[i][j+1] && check==1){
+               b->m[i][j] = None;
                bp_pop(b, r, c + 1);
                count++;
             }
-            else if(Ballon == b->m[i-1][j]){
-               b->m[i][j] == None;
+            check=valid_bp_pop(b,r,c-1);
+            if(Ballon == b->m[i-1][j] && check==1){
+               b->m[i][j] = None;
                bp_pop(b, r, c - 1);
                count++;
             }
-            
             
          }
       }
@@ -266,31 +277,11 @@ int bp_get_balloon(BPGame * b, int r, int c){
    if(r > b->row || c > b->col){
       return -1;
    }
-
-   for(i = 0; i < b->row; i++){
-      for(j= 0; j < b->col; j++){
-         if(r == i && c == j){
-            if(b->m[i][j] == None){// checks for air
-               return None;
+            if(b->m[i][j] == None){// checks for error
+               return -1;
             }
-            else if(b->m[i][j] == Red){// checks for the color red
-               return Red;
-            }
-            else if(b->m[i][j] == Blue){// checks for the color blue
-               return Blue;
-            }
-            else if(b->m[i][j] == Yellow){// checks for the color yellow
-               return Yellow;
-            }
-            else if(b->m[i][j] == Green){// checks for the color green
-               return Green;
-            }
-         }
-      }
-         
-   }
-
-   return -1;
+   return b->m[r][c];
+   
 }
 
 int bp_can_pop(BPGame * b){
@@ -325,7 +316,6 @@ int bp_undo(BPGame * b){
    return -1;
 }
 
-
 int main(){
 
    BPGame * bp;
@@ -334,7 +324,7 @@ int main(){
 
    bp_display(bp);
 
-   num = bp_pop(bp, 1, 1);
+   num = bp_pop(bp, 0, 0);
 
    printf("%d\n", num);
 
@@ -342,4 +332,3 @@ int main(){
 
    bp_destroy(bp);
 }
-
